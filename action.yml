@@ -1,0 +1,20 @@
+name: "Lona Check"
+description: "Check if Lona can run on the repo and get the URL to upload the docs."
+author: "Mathieu Dutour"
+outputs:
+  output_url:
+    description: "The URL to upload the docs to."
+inputs:
+  github_token:
+    description: "Required for Lona to check the permissions."
+    required: true
+  lona_api_base_url:
+    description: "The Lona API server."
+    required: false
+    default: https://81q1ce2llf.execute-api.eu-west-1.amazonaws.com/dev
+runs:
+  using: "node12"
+  main: "lib/main.js"
+branding:
+  icon: "git-merge"
+  color: "red"

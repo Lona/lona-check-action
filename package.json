@@ -1,0 +1,30 @@
+{
+  "name": "lona-check-action",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A Github Action to check if Lona can run on the repo and get a URL to upload the docs.",
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lona/lona-check-action.git"
+  },
+  "keywords": [
+    "actions",
+    "node",
+    "lona"
+  ],
+  "author": "Mathieu Dutour",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.0.0",
+    "node-fetch": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^12.0.4",
+    "@types/node-fetch": "^2.5.3",
+    "typescript": "^3.5.1"
+  }
+}
