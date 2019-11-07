@@ -40,7 +40,7 @@ async function run() {
 
     const data = await res.json();
 
-    core.setOutput("output_url", data.uploadURL);
+    core.setOutput("upload_url", data.uploadURL);
   } catch (error) {
     core.setFailed(error.message);
   }
