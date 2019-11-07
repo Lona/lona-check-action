@@ -2,7 +2,7 @@ name: "Lona Check"
 description: "Check if Lona can run on the repo and get the URL to upload the docs."
 author: "Mathieu Dutour"
 outputs:
-  output_url:
+  upload_url:
     description: "The URL to upload the docs to."
 inputs:
   github_token:

@@ -27,4 +27,4 @@ jobs:
 
 ### Outputs
 
-- **output_url** - The URL to upload the docs to.
+- **upload_url** - The URL to upload the docs to.
