@@ -7,6 +7,11 @@ async function run() {
     const baseURL = core.getInput("lona_api_base_url");
     const { GITHUB_REPOSITORY, GITHUB_SHA } = process.env;
 
+    if (!token) {
+      core.setFailed("Missing github_token input");
+      return;
+    }
+
     if (!GITHUB_REPOSITORY) {
       core.setFailed("Missing GITHUB_REPOSITORY");
       return;
