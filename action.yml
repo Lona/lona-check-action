@@ -1,5 +1,5 @@
-name: "Lona Check"
-description: "Check if Lona can run on the repo and get the URL to upload the docs."
+name: "Lona GitHub Action"
+description: "A Github Action to check if Lona can run on the repo and upload a documentation website to Lona."
 author: "Mathieu Dutour"
 outputs:
   upload_url:
