@@ -52,21 +52,30 @@ async function run() {
     const isTag = !!refName && refName.startsWith("refs/tags/");
 
     const github = new GitHub(token);
-    const deployment = await github.repos.createDeployment({
-      ref: refName || GITHUB_SHA,
-      owner,
+
+    const deployments = await github.repos.listDeployments({
       repo,
-      description: "Lona workspace documentation website",
-      required_contexts: [],
-      transient_environment: false,
-      environment: isTag ? "staging" : "qa",
-      headers: {
-        Accept: "application/vnd.github.ant-man-preview+json"
-      }
+      owner,
+      ref: refName
     });
 
-    core.setOutput("deployment_id", `${deployment.data.id}`);
-    core.saveState("deployment_id", `${deployment.data.id}`);
+    const deployment =
+      deployments && deployments.data.length
+        ? deployments.data[0]
+        : (await github.repos.createDeployment({
+            ref: refName || GITHUB_SHA,
+            owner,
+            repo,
+            description: "Lona workspace documentation website",
+            required_contexts: [],
+            environment: isTag ? "staging" : "qa",
+            headers: {
+              Accept: "application/vnd.github.ant-man-preview+json"
+            }
+          })).data;
+
+    core.setOutput("deployment_id", `${deployment.id}`);
+    core.saveState("deployment_id", `${deployment.id}`);
 
     if (isTag) {
       core.debug(
@@ -78,7 +87,6 @@ async function run() {
         repo,
         description: "Lona workspace documentation website - production",
         required_contexts: [],
-        transient_environment: true,
         environment: "production",
         headers: {
           Accept: "application/vnd.github.ant-man-preview+json"
@@ -96,16 +104,18 @@ async function run() {
           "Starting Lona website documentation deployment - production",
         headers: {
           Accept: "application/vnd.github.flash-preview+json"
-        }
+        },
+        auto_inactive: true
       });
     }
 
     await github.repos.createDeploymentStatus({
-      deployment_id: deployment.data.id,
+      deployment_id: deployment.id,
       repo,
       owner,
       state: "in_progress",
       description: "Starting Lona website documentation deployment",
+      auto_inactive: false,
       headers: {
         Accept: "application/vnd.github.flash-preview+json"
       }

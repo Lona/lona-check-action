@@ -37,5 +37,5 @@ runs:
   # env:
   #   WORKFLOW_SUCCEEDED: ${{ job.status == 'Success' }}
 branding:
-  icon: "git-merge"
+  icon: "upload-cloud"
   color: "red"
