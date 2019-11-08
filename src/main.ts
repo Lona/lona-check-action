@@ -104,8 +104,7 @@ async function run() {
           "Starting Lona website documentation deployment - production",
         headers: {
           Accept: "application/vnd.github.flash-preview+json"
-        },
-        auto_inactive: true
+        }
       });
     }
 
@@ -115,7 +114,6 @@ async function run() {
       owner,
       state: "in_progress",
       description: "Starting Lona website documentation deployment",
-      auto_inactive: false,
       headers: {
         Accept: "application/vnd.github.flash-preview+json"
       }

@@ -39,8 +39,9 @@ const createDeploymentStatus = async ({
         description,
         log_url: environment_url,
         environment_url,
+        auto_inactive: false,
         headers: {
-          Accept: "application/vnd.github.ant-man-preview+json"
+          Accept: "application/vnd.github.flash-preview+json"
         }
       });
 
@@ -56,8 +57,9 @@ const createDeploymentStatus = async ({
           description,
           log_url: prodURL.join("/"),
           environment_url: prodURL.join("/"),
+          auto_inactive: true,
           headers: {
-            Accept: "application/vnd.github.ant-man-preview+json"
+            Accept: "application/vnd.github.flash-preview+json"
           }
         });
       }
