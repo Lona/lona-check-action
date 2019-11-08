@@ -28,8 +28,9 @@ runs:
   using: "node12"
   main: "lib/main.js"
   post: "lib/post.js"
-  env:
-    WORKFLOW_SUCCEEDED: ${{ success() }}
+  post-if: always()
+  # env:
+  #   WORKFLOW_SUCCEEDED: ${{ success() }}
 branding:
   icon: "git-merge"
   color: "red"

@@ -29,7 +29,7 @@ async function run() {
 
     const github = new GitHub(token);
     console.log(process.env);
-    if (!process.env.WORKFLOW_SUCCEEDED) {
+    if (process.env.WORKFLOW_SUCCEEDED !== "true") {
       await github.repos.createDeploymentStatus({
         deployment_id,
         repo,
