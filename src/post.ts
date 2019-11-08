@@ -7,6 +7,7 @@ import * as path from "path";
 import fetch from "node-fetch";
 
 async function run() {
+  console.log(process.env);
   try {
     const deploymentId = core.getState("deployment_id");
     if (!deploymentId) {
@@ -28,7 +29,7 @@ async function run() {
     const [owner, repo] = GITHUB_REPOSITORY.split("/");
 
     const github = new GitHub(token);
-    console.log(process.env);
+
     if (process.env.WORKFLOW_SUCCEEDED !== "true") {
       await github.repos.createDeploymentStatus({
         deployment_id,

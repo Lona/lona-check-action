@@ -53,7 +53,8 @@ async function run() {
       ref: GITHUB_SHA,
       owner,
       repo,
-      description: "Lona workspace documentation website"
+      description: "Lona workspace documentation website",
+      required_contexts: []
     });
 
     await github.repos.createDeploymentStatus({
