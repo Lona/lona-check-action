@@ -9,6 +9,7 @@ async function run() {
     const token = core.getInput("github_token", { required: true });
     const baseURL = core.getInput("lona_api_base_url");
     const outputFolder = core.getInput("output_folder");
+    const refName = core.getInput("ref_name");
     core.setOutput("output_folder", outputFolder);
 
     fs.mkdirSync(path.join(process.cwd(), outputFolder), { recursive: true });
@@ -32,7 +33,7 @@ async function run() {
         token
       )}&owner=${encodeURIComponent(owner)}&repo=${encodeURIComponent(
         repo
-      )}&ref=${encodeURIComponent(GITHUB_SHA)}`
+      )}&ref=${encodeURIComponent(refName || GITHUB_SHA)}`
     );
 
     if (!res.ok) {
@@ -48,25 +49,43 @@ async function run() {
     core.saveState("upload_url", data.uploadURL);
     core.saveState("lona_organization_id", data.orgId);
 
+    const isTag = !!refName && /^v[0-9]*.[0-9]*.[0-9]*/.test(refName);
+
     const github = new GitHub(token);
     const deployment = await github.repos.createDeployment({
-      ref: GITHUB_SHA,
+      ref: refName || GITHUB_SHA,
       owner,
       repo,
       description: "Lona workspace documentation website",
-      required_contexts: []
+      required_contexts: [],
+      transient_environment: isTag,
+      environment: isTag ? "production" : "qa"
     });
 
     core.setOutput("deployment_id", `${deployment.data.id}`);
     core.saveState("deployment_id", `${deployment.data.id}`);
 
-    await github.repos.createDeploymentStatus({
-      deployment_id: deployment.data.id,
-      repo,
-      owner,
-      state: "in_progress",
-      description: "Starting Lona website documentation deployment"
-    });
+    if (isTag) {
+      const prodDeployment = await github.repos.createDeployment({
+        ref: GITHUB_SHA,
+        owner,
+        repo,
+        description: "Lona workspace documentation website",
+        required_contexts: [],
+        transient_environment: false,
+        environment: "production"
+      });
+
+      core.saveState("deployment_prod_id", `${prodDeployment.data.id}`);
+    }
+
+    // await github.repos.createDeploymentStatus({
+    //   deployment_id: deployment.data.id,
+    //   repo,
+    //   owner,
+    //   state: "in_progress",
+    //   description: "Starting Lona website documentation deployment"
+    // });
   } catch (error) {
     core.setFailed(error.message);
   }

@@ -6,6 +6,55 @@ import * as fs from "fs";
 import * as path from "path";
 import fetch from "node-fetch";
 
+let github: GitHub;
+
+const createDeploymentStatus = async ({
+  state,
+  description,
+  log_url
+}: {
+  state: "failure" | "error" | "success";
+  description: string;
+  log_url?: string;
+}) => {
+  try {
+    const deploymentId = core.getState("deployment_id");
+    const token = core.getInput("github_token");
+
+    const { GITHUB_REPOSITORY } = process.env;
+
+    if (deploymentId && GITHUB_REPOSITORY) {
+      const deployment_id = parseInt(deploymentId);
+      const [owner, repo] = GITHUB_REPOSITORY.split("/");
+
+      if (!github) {
+        github = new GitHub(token);
+      }
+
+      await github.repos.createDeploymentStatus({
+        deployment_id,
+        repo,
+        owner,
+        state,
+        description,
+        log_url
+      });
+
+      const deploymentProdId = core.getState("deployment_prod_id");
+      if (deploymentProdId) {
+        await github.repos.createDeploymentStatus({
+          deployment_id: parseInt(deploymentProdId),
+          repo,
+          owner,
+          state,
+          description,
+          log_url
+        });
+      }
+    }
+  } catch (err) {}
+};
+
 async function run() {
   try {
     const deploymentId = core.getState("deployment_id");
@@ -14,7 +63,6 @@ async function run() {
       return;
     }
 
-    const deployment_id = parseInt(deploymentId);
     const token = core.getInput("github_token", { required: true });
     const outputPath = core.getInput("output_folder");
     const uploadURL = core.getState("upload_url");
@@ -25,15 +73,8 @@ async function run() {
       throw new Error("Missing GITHUB_REPOSITORY");
     }
 
-    const [owner, repo] = GITHUB_REPOSITORY.split("/");
-
-    const github = new GitHub(token);
-
-    if (process.env.WORKFLOW_SUCCEEDED !== "true") {
-      await github.repos.createDeploymentStatus({
-        deployment_id,
-        repo,
-        owner,
+    if (core.getInput("workflow_succeeded") !== "true") {
+      await createDeploymentStatus({
         state: "error",
         description: "The workflow failed."
       });
@@ -68,40 +109,18 @@ async function run() {
       throw new Error("Upload failed");
     }
 
-    await github.repos.createDeploymentStatus({
-      deployment_id,
-      repo,
-      owner,
+    await createDeploymentStatus({
       state: "success",
       log_url: `${core.getInput("lona_deploy_url")}/${core.getState(
         "lona_organization_id"
-      )}/${GITHUB_SHA}`,
-      target_url: `${core.getInput("lona_deploy_url")}/${core.getState(
-        "lona_organization_id"
-      )}/${GITHUB_SHA}`,
+      )}/${core.getInput("ref_name") || GITHUB_SHA}`,
       description: "Lona website documentation deployed."
     });
   } catch (error) {
-    try {
-      const deploymentId = core.getState("deployment_id");
-      const token = core.getInput("github_token");
-
-      const { GITHUB_REPOSITORY } = process.env;
-
-      if (deploymentId && GITHUB_REPOSITORY) {
-        const deployment_id = parseInt(deploymentId);
-        const [owner, repo] = GITHUB_REPOSITORY.split("/");
-        const github = new GitHub(token);
-
-        await github.repos.createDeploymentStatus({
-          deployment_id,
-          repo,
-          owner,
-          state: "failure",
-          description: error.message
-        });
-      }
-    } catch (err) {}
+    await createDeploymentStatus({
+      state: "failure",
+      description: error.message
+    });
 
     core.setFailed(error.message);
   }

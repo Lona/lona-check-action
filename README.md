@@ -19,12 +19,14 @@ jobs:
         id: lona
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow_succeeded: ${{ job.status == 'Success' }}
       # put some files in ${{ steps.lona.outputs.output_folder }}
 ```
 
 ### Inputs
 
 - **github_token** _(required)_ - Required for permission to tag the repo. Usually `${{ secrets.GITHUB_TOKEN }}`.
+- **workflow_succeeded** _(required)_ - Required for setting the deployment state. Usually `${{ job.status == 'Success' }}`.
 - **lona_api_base_url** - The Lona API server URL.
 - **output_folder** - The folder that will get deployed to Lona's servers.
 - **lona_deploy_url** - The Lona URL where the websites are deployed.

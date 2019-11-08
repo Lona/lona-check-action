@@ -14,6 +14,9 @@ inputs:
   github_token:
     description: "Required for Lona to check the permissions."
     required: true
+  workflow_succeeded:
+    description: "Required for setting the deployment state."
+    required: true
   output_folder:
     description: "The folder that will get deployed to Lona's servers."
     default: "./.output"
@@ -29,8 +32,8 @@ runs:
   main: "lib/main.js"
   post: "lib/post.js"
   post-if: always()
-  env:
-    WORKFLOW_SUCCEEDED: ${{ job.status == 'Success' }}
+  # env:
+  #   WORKFLOW_SUCCEEDED: ${{ job.status == 'Success' }}
 branding:
   icon: "git-merge"
   color: "red"
