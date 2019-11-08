@@ -88,7 +88,6 @@ async function run() {
         description: "Lona workspace documentation website - production",
         required_contexts: [],
         environment: "production",
-        transient_environment: true,
         mediaType: {
           previews: ["ant-man-preview", "flash-preview"]
         }
