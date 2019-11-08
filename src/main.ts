@@ -49,7 +49,7 @@ async function run() {
     core.saveState("upload_url", data.uploadURL);
     core.saveState("lona_organization_id", data.orgId);
 
-    const isTag = !!refName && /^v[0-9]*\.[0-9]*\.[0-9]*$/.test(refName);
+    const isTag = !!refName && refName.startsWith("refs/tags/");
 
     const github = new GitHub(token);
     const deployment = await github.repos.createDeployment({
@@ -86,15 +86,30 @@ async function run() {
       });
 
       core.saveState("deployment_prod_id", `${prodDeployment.data.id}`);
+
+      await github.repos.createDeploymentStatus({
+        deployment_id: prodDeployment.data.id,
+        repo,
+        owner,
+        state: "in_progress",
+        description:
+          "Starting Lona website documentation deployment - production",
+        headers: {
+          Accept: "application/vnd.github.flash-preview+json"
+        }
+      });
     }
 
-    // await github.repos.createDeploymentStatus({
-    //   deployment_id: deployment.data.id,
-    //   repo,
-    //   owner,
-    //   state: "in_progress",
-    //   description: "Starting Lona website documentation deployment"
-    // });
+    await github.repos.createDeploymentStatus({
+      deployment_id: deployment.data.id,
+      repo,
+      owner,
+      state: "in_progress",
+      description: "Starting Lona website documentation deployment",
+      headers: {
+        Accept: "application/vnd.github.flash-preview+json"
+      }
+    });
   } catch (error) {
     core.setFailed(error.message);
   }
