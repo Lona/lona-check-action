@@ -35,7 +35,8 @@ async function run() {
         deployment_id,
         repo,
         owner,
-        state: "failure"
+        state: "failure",
+        description: "The workflow failed."
       });
       return;
     }
@@ -78,7 +79,8 @@ async function run() {
       )}/${GITHUB_SHA}`,
       target_url: `${core.getInput("lona_deploy_url")}/${core.getState(
         "lona_organization_id"
-      )}/${GITHUB_SHA}`
+      )}/${GITHUB_SHA}`,
+      description: "Lona website documentation deployed."
     });
   } catch (error) {
     try {
