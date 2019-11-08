@@ -11,11 +11,11 @@ let github: GitHub;
 const createDeploymentStatus = async ({
   state,
   description,
-  log_url
+  environment_url
 }: {
   state: "failure" | "error" | "success";
   description: string;
-  log_url?: string;
+  environment_url?: string;
 }) => {
   try {
     const deploymentId = core.getState("deployment_id");
@@ -37,13 +37,16 @@ const createDeploymentStatus = async ({
         owner,
         state,
         description,
-        log_url,
-        target_url: log_url
+        log_url: environment_url,
+        environment_url,
+        headers: {
+          Accept: "application/vnd.github.ant-man-preview+json"
+        }
       });
 
       const deploymentProdId = core.getState("deployment_prod_id");
-      if (deploymentProdId && log_url) {
-        let prodURL = log_url.split("/");
+      if (deploymentProdId && environment_url) {
+        let prodURL = environment_url.split("/");
         prodURL.pop();
         await github.repos.createDeploymentStatus({
           deployment_id: parseInt(deploymentProdId),
@@ -52,7 +55,10 @@ const createDeploymentStatus = async ({
           state,
           description,
           log_url: prodURL.join("/"),
-          target_url: prodURL.join("/")
+          environment_url: prodURL.join("/"),
+          headers: {
+            Accept: "application/vnd.github.ant-man-preview+json"
+          }
         });
       }
     }
@@ -115,7 +121,7 @@ async function run() {
 
     await createDeploymentStatus({
       state: "success",
-      log_url: `${core.getInput("lona_deploy_url")}/${core.getState(
+      environment_url: `${core.getInput("lona_deploy_url")}/${core.getState(
         "lona_organization_id"
       )}/${core.getInput("ref_name") || GITHUB_SHA}`,
       description: "Lona website documentation deployed."

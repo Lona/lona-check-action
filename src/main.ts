@@ -14,7 +14,7 @@ async function run() {
 
     fs.mkdirSync(path.join(process.cwd(), outputFolder), { recursive: true });
 
-    const { GITHUB_REPOSITORY, GITHUB_SHA, GITHUB_REF } = process.env;
+    const { GITHUB_REPOSITORY, GITHUB_SHA } = process.env;
 
     if (!GITHUB_REPOSITORY) {
       core.setFailed("Missing GITHUB_REPOSITORY");
@@ -58,8 +58,11 @@ async function run() {
       repo,
       description: "Lona workspace documentation website",
       required_contexts: [],
-      transient_environment: isTag,
-      environment: isTag ? "production" : "qa"
+      transient_environment: false,
+      environment: isTag ? "staging" : "qa",
+      headers: {
+        Accept: "application/vnd.github.ant-man-preview+json"
+      }
     });
 
     core.setOutput("deployment_id", `${deployment.data.id}`);
@@ -70,13 +73,16 @@ async function run() {
         `it is a tag (${refName}) so we will create the prod deployment at the same time`
       );
       const prodDeployment = await github.repos.createDeployment({
-        ref: GITHUB_REF || GITHUB_SHA,
+        ref: GITHUB_SHA,
         owner,
         repo,
         description: "Lona workspace documentation website - production",
         required_contexts: [],
-        transient_environment: false,
-        environment: "production"
+        transient_environment: true,
+        environment: "production",
+        headers: {
+          Accept: "application/vnd.github.ant-man-preview+json"
+        }
       });
 
       core.saveState("deployment_prod_id", `${prodDeployment.data.id}`);
