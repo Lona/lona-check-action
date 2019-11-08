@@ -37,18 +37,22 @@ const createDeploymentStatus = async ({
         owner,
         state,
         description,
-        log_url
+        log_url,
+        target_url: log_url
       });
 
       const deploymentProdId = core.getState("deployment_prod_id");
-      if (deploymentProdId) {
+      if (deploymentProdId && log_url) {
+        let prodURL = log_url.split("/");
+        prodURL.pop();
         await github.repos.createDeploymentStatus({
           deployment_id: parseInt(deploymentProdId),
           repo,
           owner,
           state,
           description,
-          log_url
+          log_url: prodURL.join("/"),
+          target_url: prodURL.join("/")
         });
       }
     }

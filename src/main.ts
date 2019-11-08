@@ -14,7 +14,7 @@ async function run() {
 
     fs.mkdirSync(path.join(process.cwd(), outputFolder), { recursive: true });
 
-    const { GITHUB_REPOSITORY, GITHUB_SHA } = process.env;
+    const { GITHUB_REPOSITORY, GITHUB_SHA, GITHUB_REF } = process.env;
 
     if (!GITHUB_REPOSITORY) {
       core.setFailed("Missing GITHUB_REPOSITORY");
@@ -49,7 +49,7 @@ async function run() {
     core.saveState("upload_url", data.uploadURL);
     core.saveState("lona_organization_id", data.orgId);
 
-    const isTag = !!refName && /^v[0-9]*.[0-9]*.[0-9]*/.test(refName);
+    const isTag = !!refName && /^v[0-9]*\.[0-9]*\.[0-9]*$/.test(refName);
 
     const github = new GitHub(token);
     const deployment = await github.repos.createDeployment({
@@ -66,11 +66,14 @@ async function run() {
     core.saveState("deployment_id", `${deployment.data.id}`);
 
     if (isTag) {
+      core.debug(
+        `it is a tag (${refName}) so we will create the prod deployment at the same time`
+      );
       const prodDeployment = await github.repos.createDeployment({
-        ref: GITHUB_SHA,
+        ref: GITHUB_REF || GITHUB_SHA,
         owner,
         repo,
-        description: "Lona workspace documentation website",
+        description: "Lona workspace documentation website - production",
         required_contexts: [],
         transient_environment: false,
         environment: "production"

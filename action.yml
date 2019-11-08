@@ -17,6 +17,8 @@ inputs:
   workflow_succeeded:
     description: "Required for setting the deployment state."
     required: true
+  ref_name:
+    description: "The ref to deploy."
   output_folder:
     description: "The folder that will get deployed to Lona's servers."
     default: "./.output"
