@@ -69,8 +69,8 @@ async function run() {
             description: "Lona workspace documentation website",
             required_contexts: [],
             environment: isTag ? "staging" : "qa",
-            headers: {
-              Accept: "application/vnd.github.ant-man-preview+json"
+            mediaType: {
+              previews: ["ant-man-preview", "flash-preview"]
             }
           })).data;
 
@@ -88,8 +88,9 @@ async function run() {
         description: "Lona workspace documentation website - production",
         required_contexts: [],
         environment: "production",
-        headers: {
-          Accept: "application/vnd.github.ant-man-preview+json"
+        transient_environment: true,
+        mediaType: {
+          previews: ["ant-man-preview", "flash-preview"]
         }
       });
 
@@ -102,8 +103,8 @@ async function run() {
         state: "in_progress",
         description:
           "Starting Lona website documentation deployment - production",
-        headers: {
-          Accept: "application/vnd.github.flash-preview+json"
+        mediaType: {
+          previews: ["ant-man-preview", "flash-preview"]
         }
       });
     }
@@ -114,8 +115,8 @@ async function run() {
       owner,
       state: "in_progress",
       description: "Starting Lona website documentation deployment",
-      headers: {
-        Accept: "application/vnd.github.flash-preview+json"
+      mediaType: {
+        previews: ["ant-man-preview", "flash-preview"]
       }
     });
   } catch (error) {

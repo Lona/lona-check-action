@@ -40,29 +40,32 @@ const createDeploymentStatus = async ({
         log_url: environment_url,
         environment_url,
         auto_inactive: false,
-        headers: {
-          Accept: "application/vnd.github.flash-preview+json"
+        mediaType: {
+          previews: ["ant-man-preview", "flash-preview"]
         }
       });
+    }
 
-      const deploymentProdId = core.getState("deployment_prod_id");
-      if (deploymentProdId && environment_url) {
-        let prodURL = environment_url.split("/");
-        prodURL.pop();
-        await github.repos.createDeploymentStatus({
-          deployment_id: parseInt(deploymentProdId),
-          repo,
-          owner,
-          state,
-          description,
-          log_url: prodURL.join("/"),
-          environment_url: prodURL.join("/"),
-          auto_inactive: true,
-          headers: {
-            Accept: "application/vnd.github.flash-preview+json"
-          }
-        });
-      }
+    const deploymentProdId = core.getState("deployment_prod_id");
+    if (deploymentProdId && environment_url && GITHUB_REPOSITORY) {
+      const deployment_id = parseInt(deploymentProdId);
+      const [owner, repo] = GITHUB_REPOSITORY.split("/");
+
+      let prodURL = environment_url.split("/");
+      prodURL.pop();
+      await github.repos.createDeploymentStatus({
+        deployment_id,
+        repo,
+        owner,
+        state,
+        description,
+        log_url: prodURL.join("/"),
+        environment_url: prodURL.join("/"),
+        auto_inactive: true,
+        mediaType: {
+          previews: ["ant-man-preview", "flash-preview"]
+        }
+      });
     }
   } catch (err) {}
 };
