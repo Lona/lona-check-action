@@ -7,7 +7,6 @@ import * as path from "path";
 import fetch from "node-fetch";
 
 async function run() {
-  console.log(process.env);
   try {
     const deploymentId = core.getState("deployment_id");
     if (!deploymentId) {
@@ -35,7 +34,7 @@ async function run() {
         deployment_id,
         repo,
         owner,
-        state: "failure",
+        state: "error",
         description: "The workflow failed."
       });
       return;
@@ -98,7 +97,8 @@ async function run() {
           deployment_id,
           repo,
           owner,
-          state: "failure"
+          state: "failure",
+          description: error.message
         });
       }
     } catch (err) {}

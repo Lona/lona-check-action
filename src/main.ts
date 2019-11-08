@@ -60,13 +60,13 @@ async function run() {
     core.setOutput("deployment_id", `${deployment.data.id}`);
     core.saveState("deployment_id", `${deployment.data.id}`);
 
-    // await github.repos.createDeploymentStatus({
-    //   deployment_id: deployment.data.id,
-    //   repo,
-    //   owner,
-    //   state: "in_progress",
-    //   description: "Starting Lona website documentation deployment"
-    // });
+    await github.repos.createDeploymentStatus({
+      deployment_id: deployment.data.id,
+      repo,
+      owner,
+      state: "in_progress",
+      description: "Starting Lona website documentation deployment"
+    });
   } catch (error) {
     core.setFailed(error.message);
   }
