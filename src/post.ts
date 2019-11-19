@@ -47,11 +47,11 @@ const createDeploymentStatus = async ({
     }
 
     const deploymentProdId = core.getState("deployment_prod_id");
-    if (deploymentProdId && environment_url && GITHUB_REPOSITORY) {
+    if (deploymentProdId && GITHUB_REPOSITORY) {
       const deployment_id = parseInt(deploymentProdId);
       const [owner, repo] = GITHUB_REPOSITORY.split("/");
 
-      let prodURL = environment_url.split("/");
+      let prodURL = (environment_url || "").split("/");
       prodURL.pop();
       await github.repos.createDeploymentStatus({
         deployment_id,
@@ -59,8 +59,8 @@ const createDeploymentStatus = async ({
         owner,
         state,
         description,
-        log_url: prodURL.join("/"),
-        environment_url: prodURL.join("/"),
+        log_url: prodURL.length > 0 ? prodURL.join("/") : undefined,
+        environment_url: prodURL.length > 0 ? prodURL.join("/") : undefined,
         auto_inactive: true,
         mediaType: {
           previews: ["ant-man-preview", "flash-preview"]
