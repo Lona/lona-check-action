@@ -78,7 +78,6 @@ async function run() {
       return;
     }
 
-    const token = core.getInput("github_token", { required: true });
     const outputPath = core.getInput("output_folder");
     const uploadURL = core.getState("upload_url");
 
