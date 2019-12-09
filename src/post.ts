@@ -11,11 +11,13 @@ let github: GitHub;
 const createDeploymentStatus = async ({
   state,
   description,
-  environment_url
+  environment_url,
+  refName
 }: {
   state: "failure" | "error" | "success";
   description: string;
   environment_url?: string;
+  refName?: string;
 }) => {
   try {
     const deploymentId = core.getState("deployment_id");
@@ -31,14 +33,16 @@ const createDeploymentStatus = async ({
         github = new GitHub(token);
       }
 
+      const deploymentURL = environment_url ? `${environment_url}/${refName}` : undefined
+
       await github.repos.createDeploymentStatus({
         deployment_id,
         repo,
         owner,
         state,
         description,
-        log_url: environment_url,
-        environment_url,
+        log_url: deploymentURL,
+        environment_url: deploymentURL,
         auto_inactive: false,
         mediaType: {
           previews: ["ant-man-preview", "flash-preview"]
@@ -51,16 +55,14 @@ const createDeploymentStatus = async ({
       const deployment_id = parseInt(deploymentProdId);
       const [owner, repo] = GITHUB_REPOSITORY.split("/");
 
-      let prodURL = (environment_url || "").split("/");
-      prodURL.pop();
       await github.repos.createDeploymentStatus({
         deployment_id,
         repo,
         owner,
         state,
         description,
-        log_url: prodURL.length > 0 ? prodURL.join("/") : undefined,
-        environment_url: prodURL.length > 0 ? prodURL.join("/") : undefined,
+        log_url: environment_url,
+        environment_url,
         auto_inactive: true,
         mediaType: {
           previews: ["ant-man-preview", "flash-preview"]
@@ -127,7 +129,8 @@ async function run() {
       state: "success",
       environment_url: `${core.getInput("lona_deploy_url")}/${core.getState(
         "lona_organization_id"
-      )}/${core.getInput("ref_name") || GITHUB_SHA}`,
+      )}`,
+      refName: `${core.getInput("ref_name") || GITHUB_SHA}`,
       description: "Lona website documentation deployed."
     });
   } catch (error) {
