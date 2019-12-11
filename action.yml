@@ -27,7 +27,7 @@ inputs:
   lona_deploy_url:
     description: "The Lona URL where the websites are deployed."
     required: false
-    default: https://lona-public-assets-dev.s3-eu-west-1.amazonaws.com
+    default: http://lona-public-assets-dev.s3-website-eu-west-1.amazonaws.com
   lona_api_base_url:
     description: "The Lona API server."
     required: false
