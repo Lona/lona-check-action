@@ -31,7 +31,7 @@ inputs:
   lona_api_base_url:
     description: "The Lona API server."
     required: false
-    default: https://81q1ce2llf.execute-api.eu-west-1.amazonaws.com/dev
+    default: https://te1fv8l2wh.execute-api.eu-west-1.amazonaws.com/dev
 runs:
   using: "node12"
   main: "lib/main.js"
