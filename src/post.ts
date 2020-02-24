@@ -33,7 +33,9 @@ const createDeploymentStatus = async ({
         github = new GitHub(token);
       }
 
-      const deploymentURL = environment_url ? `${environment_url}/${refName}` : undefined
+      const deploymentURL = environment_url
+        ? `${environment_url}/${refName}`
+        : undefined;
 
       await github.repos.createDeploymentStatus({
         deployment_id,

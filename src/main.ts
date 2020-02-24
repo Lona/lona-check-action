@@ -62,17 +62,19 @@ async function run() {
     const deployment =
       deployments && deployments.data.length
         ? deployments.data[0]
-        : (await github.repos.createDeployment({
-            ref: refName || GITHUB_SHA,
-            owner,
-            repo,
-            description: "Lona workspace documentation website",
-            required_contexts: [],
-            environment: isTag ? "staging" : "qa",
-            mediaType: {
-              previews: ["ant-man-preview", "flash-preview"]
-            }
-          })).data;
+        : (
+            await github.repos.createDeployment({
+              ref: refName || GITHUB_SHA,
+              owner,
+              repo,
+              description: "Lona workspace documentation website",
+              required_contexts: [],
+              environment: isTag ? "staging" : "qa",
+              mediaType: {
+                previews: ["ant-man-preview", "flash-preview"]
+              }
+            })
+          ).data;
 
     core.setOutput("deployment_id", `${deployment.id}`);
     core.saveState("deployment_id", `${deployment.id}`);
@@ -119,6 +121,7 @@ async function run() {
       }
     });
   } catch (error) {
+    console.error(error);
     core.setFailed(error.message);
   }
 }
