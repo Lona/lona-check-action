@@ -19,17 +19,17 @@
   "author": "Mathieu Dutour",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.0",
-    "@actions/github": "^1.1.0",
+    "@actions/core": "^1.2.2",
+    "@actions/github": "^2.1.1",
     "jszip": "^3.2.2",
     "klaw": "^3.0.0",
-    "node-fetch": "*"
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {
-    "@types/jszip": "^3.1.6",
+    "@types/jszip": "^3.1.7",
     "@types/klaw": "^3.0.0",
-    "@types/node": "^12.0.4",
-    "@types/node-fetch": "^2.5.3",
-    "typescript": "^3.5.1"
+    "@types/node": "^12.12.28",
+    "@types/node-fetch": "^2.5.5",
+    "typescript": "^3.8.2"
   }
 }
