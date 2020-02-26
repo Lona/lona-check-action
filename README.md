@@ -29,11 +29,7 @@ jobs:
 - **`workflow_succeeded`** _(required)_ - Required for setting the deployment state. Usually `${{ job.status == 'Success' }}`.
 - **`lona_api_base_url`** - The Lona API server URL.
 - **`output_folder`** - The folder that will get deployed to Lona's servers.
-- **`lona_deploy_url`** - The Lona URL where the websites are deployed.
 
 ### Outputs
 
-- **`upload_url`** - The URL to upload the docs to.
-- **`lona_organization_id`** - The id of the Lona organization this repo is part of.
-- **`deployment_id`** - The id of the GitHub deployment that was started by this action.
 - **`output_folder`** - The folder that will get deployed to Lona's servers.

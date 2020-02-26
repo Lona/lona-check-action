@@ -2,12 +2,6 @@ name: "Lona GitHub Action"
 description: "A Github Action to check if Lona can run on the repo and upload a documentation website to Lona."
 author: "Mathieu Dutour"
 outputs:
-  upload_url:
-    description: "The URL to upload the docs to."
-  lona_organization_id:
-    description: "The id of the Lona organization this repo is part of."
-  deployment_id:
-    description: "The id of the GitHub deployment that was started by this action."
   output_folder:
     description: "The folder that will get deployed to Lona's servers."
 inputs:
@@ -24,14 +18,10 @@ inputs:
     description: "The folder that will get deployed to Lona's servers."
     required: false
     default: "./.output"
-  lona_deploy_url:
-    description: "The Lona URL where the websites are deployed."
-    required: false
-    default: https://d29ew8llcje2de.cloudfront.net
   lona_api_base_url:
     description: "The Lona API server."
     required: false
-    default: https://te1fv8l2wh.execute-api.eu-west-1.amazonaws.com/dev
+    default: https://api.lona.design/production
 runs:
   using: "node12"
   main: "lib/main.js"

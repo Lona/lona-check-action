@@ -44,10 +44,9 @@ async function run() {
 
     const data = await res.json();
 
-    core.setOutput("upload_url", data.uploadURL);
-    core.setOutput("lona_organization_id", data.orgId);
     core.saveState("upload_url", data.uploadURL);
     core.saveState("lona_organization_id", data.orgId);
+    core.saveState("lona_deploy_url", data.deployURL);
 
     const isTag = !!refName && refName.startsWith("refs/tags/");
 
@@ -76,7 +75,6 @@ async function run() {
             })
           ).data;
 
-    core.setOutput("deployment_id", `${deployment.id}`);
     core.saveState("deployment_id", `${deployment.id}`);
 
     if (isTag) {

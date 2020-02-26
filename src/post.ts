@@ -129,9 +129,7 @@ async function run() {
 
     await createDeploymentStatus({
       state: "success",
-      environment_url: `${core.getInput("lona_deploy_url")}/${core.getState(
-        "lona_organization_id"
-      )}`,
+      environment_url: core.getState("lona_deploy_url"),
       refName: `${core.getInput("ref_name") || GITHUB_SHA}`,
       description: "Lona website documentation deployed."
     });
