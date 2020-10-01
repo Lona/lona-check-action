@@ -19,7 +19,7 @@
   "author": "Mathieu Dutour",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.2",
+    "@actions/core": "^1.2.6",
     "@actions/github": "^2.1.1",
     "jszip": "^3.2.2",
     "klaw": "^3.0.0",
